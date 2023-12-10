@@ -2,8 +2,8 @@
     "plugin_name": "{{cookiecutter.plugin_name}}",
     "plugin_description": "{{cookiecutter.plugin_description}}",
     "_copy_without_render": [
-        "{{cookiecutter.plugin_name}}/fmt/src/*", 
-        "{{cookiecutter.plugin_name}}/fmt/include/fmt/*", 
-        "{{cookiecutter.plugin_name}}/IMGUI/*"
+        "{{cookiecutter._output_folder_path}}/{{cookiecutter.plugin_name}}/fmt/src/*",
+        "{{cookiecutter._output_folder_path}}/{{cookiecutter.plugin_name}}/fmt/include/fmt/*",
+        "{{cookiecutter._output_folder_path}}/{{cookiecutter.plugin_name}}/IMGUI/*"
     ]
 }
