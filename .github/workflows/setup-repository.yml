@@ -72,10 +72,3 @@ jobs:
           git add .
           git commit -m 'Initial commit'
           git push origin HEAD:${{ github.ref }} -f
-
-      - name: Remove secret REPO_SETUP_TOKEN
-        # After re-initializing the repository, we can remove the `REPO_SETUP_TOKEN` secret.
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh secret delete REPO_SETUP_TOKEN -R ${{ github.repository }}
