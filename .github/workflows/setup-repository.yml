@@ -1,5 +1,7 @@
 name: Setup repository
-permissions: write-all
+permissions:
+  actions: write
+
 env:
   REPO_SETUP_TOKEN: ${{ secrets.REPO_SETUP_TOKEN }}
 defaults:
