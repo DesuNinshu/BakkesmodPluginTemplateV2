@@ -3,8 +3,8 @@
     "plugin_description": "{{cookiecutter.plugin_description}}",
     "output_dir": "{{cookiecutter.output_dir}}",
     "_copy_without_render": [
-        "{{cookiecutter.output_dir}}/{{cookiecutter.plugin_name}}/fmt/src/*",
-        "{{cookiecutter.output_dir}}/{{cookiecutter.plugin_name}}/fmt/include/fmt/*",
-        "{{cookiecutter.output_dir}}/{{cookiecutter.plugin_name}}/IMGUI/*"
+        "{{cookiecutter.plugin_name}}/fmt/src/**/*",
+        "{{cookiecutter.plugin_name}}/fmt/include/fmt/**/*",
+        "{{cookiecutter.plugin_name}}/IMGUI/**/*"
     ]
 }
