@@ -22,7 +22,7 @@ jobs:
       - name: Check Secret
         run: |
           if ($null -eq $env:REPO_SETUP_TOKEN) {
-            echo ::error title=REPO_SETUP_TOKEN was not set::Please create a new secret with workflow permissions and add it to the repository with the name REPO_SETUP_TOKEN.
+            echo "::error title=REPO_SETUP_TOKEN was not set::Please create a new secret with workflow permissions and add it to the repository with the name REPO_SETUP_TOKEN."
           }
       - name: Checkout Repository
         uses: actions/checkout@v4
