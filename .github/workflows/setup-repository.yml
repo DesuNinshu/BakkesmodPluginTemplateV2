@@ -16,7 +16,7 @@ on:
 jobs:
   setup:
     name: Initialize Repo
-    if: ${{ github.event.repository.is_template == false && env.REPO_SETUP_TOKEN != '' }}
+    if: ${{ github.event.repository.is_template == false && vars.REPO_SETUP_TOKEN != '' }}
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
