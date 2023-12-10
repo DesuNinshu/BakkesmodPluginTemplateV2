@@ -55,7 +55,7 @@ jobs:
         #                 cookiecutter.json file content
         #
         # --output-dir    Where to output the generated project dir into
-        run: 'cookiecutter . --no-input --output-dir ./cookiecutter-temp { project_name: ${{ github.repository.name }} }'
+        run: 'cookiecutter . --no-input --output-dir ./cookiecutter-temp project_name=${{ github.repository.name }}'
 
       - name: Prepare root directory
         # Remove all files and folder except .git/ and cookiecutter-temp/
