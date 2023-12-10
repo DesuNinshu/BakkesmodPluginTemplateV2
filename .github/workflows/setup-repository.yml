@@ -16,9 +16,14 @@ on:
 jobs:
   setup:
     name: Initialize Repo
-    if: ${{ github.event.repository.is_template == false && vars.REPO_SETUP_TOKEN != '' }}
+    if: ${{ github.event.repository.is_template == false }}
     runs-on: windows-latest
     steps:
+      - name: Check Secret
+        run: |
+          if ($null -eq $env:REPO_SETUP_TOKEN) {
+            echo ::error title=REPO_SETUP_TOKEN was not set::Please create a new secret with workflow permissions and add it to the repository with the name REPO_SETUP_TOKEN.
+          }
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
