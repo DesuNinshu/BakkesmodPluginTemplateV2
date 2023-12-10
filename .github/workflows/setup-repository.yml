@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/checkout@v2
         with:
-          # Comminting workflow files using the regular GITHUB_TOKEN will fail with 
+          # Commenting workflow files using the regular GITHUB_TOKEN will fail with 
           # `Git Error: Refusing to allow a GitHub App to create or update workflow without workflows permission`.
           # This is by design to prevent third-parties from adding malicious workflow files.
           #
@@ -50,11 +50,11 @@ jobs:
         #                 cookiecutter.json file content
         #
         # --output-dir    Where to output the generated project dir into
-        run: cookiecutter . --no-input --output-dir ./cookiecutter-temp
+        run: cookiecutter . --output-dir ./cookiecutter-temp
 
       - name: Prepare root directory
         shell: bash
-        # Remove all files and folder exepct .git/ and cookiecutter-temp/
+        # Remove all files and folder except .git/ and cookiecutter-temp/
         run: |
           find ./ -maxdepth 1 \
           ! -name '.git' \
