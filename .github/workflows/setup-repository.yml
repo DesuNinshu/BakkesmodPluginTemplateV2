@@ -1,9 +1,8 @@
 name: Setup repository
 permissions:
   actions: write
-
 env:
-  REPO_SETUP_TOKEN: ${{ secrets.REPO_SETUP_TOKEN }}
+  REPO_SETUP_TOKEN: ${{ secrets.REPO_SETUP_TOKEN || secrets.GITHUB_TOKEN }}
 defaults:
   run:
     shell: bash
@@ -13,43 +12,24 @@ on:
       - cookiecutter.json
 jobs:
   setup:
-    name: Reinitialize repository
+    name: Initialize Repo
+    if: ${{ !github.is_template }}
     runs-on: ubuntu-latest
-    env:
-      REPO_SETUP_TOKEN: ${{ secrets.REPO_SETUP_TOKEN }}
     steps:
-      - name: Do not run scaffolding on template repository
-        # This workflow runs when the `cookiecutter.json` file is modified.
-        # This is the trick to re-init a repository, but we don't want to
-        # run this action if this file is modified in the origin template repository.
-        #
-        # Using the GitHub rest API allows us to identify if the current repository
-        # is a template repository or not.
-        run: |
-          curl --silent -X GET \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.baptiste-preview+json" \
-            https://api.github.com/repos/$GITHUB_REPOSITORY \
-            | jq --exit-status '.is_template == false';
-
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
-          # Commenting workflow files using the regular GITHUB_TOKEN will fail with 
-          # `Git Error: Refusing to allow a GitHub App to create or update workflow without workflows permission`.
-          # This is by design to prevent third-parties from adding malicious workflow files.
-          #
-          # Generate a new personal access token with the workflow `scope` does the trick.
-          # Checkout my blog post https://stefanbuck.com/blog for alternative options
-          token: ${{ env.REPO_SETUP_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-python@v4
+      - name: Install Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install dependencies
         run: pip install cookiecutter
 
-      - name: Scaffolding repository
+      - name: Scaffolding Repository
         # cookiecutter is command-line utility to create projects from templates
         # https://github.com/cookiecutter/cookiecutter
         #
@@ -57,7 +37,7 @@ jobs:
         #                 cookiecutter.json file content
         #
         # --output-dir    Where to output the generated project dir into
-        run: 'cookiecutter . --no-input --output-dir ./cookiecutter-temp project_name=${{ github.repository.name }}'
+        run: 'cookiecutter . --no-input --output-dir ./cookiecutter-temp plugin_name=${{ github.repository.name }} plugin_description=${{ github.repository.description }}'
 
       - name: Prepare root directory
         # Remove all files and folder except .git/ and cookiecutter-temp/
