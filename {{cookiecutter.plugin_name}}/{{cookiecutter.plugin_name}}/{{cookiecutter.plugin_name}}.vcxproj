@@ -9,7 +9,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{3310989f-f534-4fca-8ef6-40cee8ddd0ce}</ProjectGuid>
-    <RootNamespace>___cookiecutter_plugin_name__</RootNamespace>
+    <RootNamespace>{{cookiecutter.plugin_name}}</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
