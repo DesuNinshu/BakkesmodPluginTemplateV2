@@ -3,7 +3,8 @@ run-name: Plugin template setup in ${{ github.event.repository.name }} by @${{ g
 permissions:
   actions: write
   contents: write
-
+env:
+  REPO_SETUP_TOKEN: ${{ secrets.REPO_SETUP_TOKEN }}
 defaults:
   run:
     shell: pwsh
