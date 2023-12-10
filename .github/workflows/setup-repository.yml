@@ -65,7 +65,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git add .
           git commit -m 'Initial commit'
-          git push origin -f --token ${{ secrets.GITHUB_TOKEN }}
+          git push origin HEAD:${{ github.ref }}
       - name: Remove temporary directory
         if: ${{ always() }}
         # Remove the temporary directory
