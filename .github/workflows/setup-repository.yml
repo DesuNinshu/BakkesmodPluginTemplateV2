@@ -8,7 +8,7 @@ env:
   REPO_SETUP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 defaults:
   run:
-    shell: bash
+    shell: pwsh
 on:
   workflow_dispatch:
   push:
@@ -18,7 +18,7 @@ jobs:
   setup:
     name: Initialize Repo
     if: ${{ github.event.repository.is_template == false }}
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -41,39 +41,33 @@ jobs:
         #                 cookiecutter.json file content
         #
         # --output-dir    Where to output the generated project dir into
-        run: 'cookiecutter . --no-input --overwrite-if-exists --output-dir ./cookiecutter-temp plugin_name=${{ github.event.repository.name }} plugin_description="${{ github.event.repository.description }}"'
+        run: 'cookiecutter . --no-input --overwrite-if-exists plugin_name=${{ github.event.repository.name }} plugin_description="${{ github.event.repository.description }}" output_dir=.temp'
 
       - name: Prepare root directory
-        # Remove all files and folder except .git/ and cookiecutter-temp/
+        # Remove all files and folder except .git/ and .temp/
         run: |
-          find ./ -maxdepth 1 \
-          ! -name '.git' \
-          ! -name 'cookiecutter-temp' \
-          ! -name '.' \
-          ! -exec rm -rf {} +
+          Get-ChildItem -Force -Exclude .git, .temp | Remove-Item -Recurse -Force -Verbose
 
       - name: Move files to root
-        # The cookiecutter-temp/ folder contains a single folder which is the
+        # The .temp/ folder contains a single folder which is the
         # generated project by cookiecutter. We want to move all the project
         # files into the root directory so we can reinitialize git in the next step
         run: |
-          rsync -r ./cookiecutter-temp/*/ . && \
-          rm -rf ./cookiecutter-temp/
+          Move-Item -Path ".\.temp\*" -Destination $PWD -Force -Verbose
 
       - name: Reinitialize git repository
-
         # Reinitialize git after scaffolding this repository.
         # We use `git checkout --orphan` to create a branch in a git init-like state.
         # By force pushing this as `main` we end up with a new clean git history.
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com" && \
-          git config --global user.name "github-actions[bot]" && \
-          git checkout --orphan temp-branch && \
-          git rm -rf . && \
-          git add -A && \
-          git commit -m 'Initial commit' && \
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git checkout --orphan temp-branch
+          git rm -rf .
+          git add .
+          git commit -m 'Initial commit'
           git push origin temp-branch:master -f
-          
+
       - name: Remove secret REPO_SETUP_TOKEN
         # After re-initializing the repository, we can remove the `REPO_SETUP_TOKEN` secret.
         if: ${{ env.REPO_SETUP_TOKEN }}
