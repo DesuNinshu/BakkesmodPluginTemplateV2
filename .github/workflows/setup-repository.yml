@@ -41,7 +41,7 @@ jobs:
         #                 cookiecutter.json file content
         #
         # --output-dir    Where to output the generated project dir into
-        run: 'cookiecutter . --no-input --overwrite-if-exists plugin_name=${{ github.event.repository.name }} plugin_description="${{ github.event.repository.description }}" output_dir=.temp'
+        run: 'cookiecutter . --no-input --overwrite-if-exists plugin_name=${{ github.event.repository.name }} plugin_description="${{ github.event.repository.description }}" output_dir=".temp"'
 
       - name: Prepare root directory
         # Remove all files and folder except .git/ and .temp/
@@ -53,8 +53,8 @@ jobs:
         # generated project by cookiecutter. We want to move all the project
         # files into the root directory so we can reinitialize git in the next step
         run: |
-          Move-Item -Path ".\.temp\*" -Destination $PWD -Force -Verbose
-          Remove-Item -Path ".\.temp" -Force -Verbose
+          Move-Item -Path "./.temp/*" -Destination $PWD -Force -Verbose
+          Remove-Item -Path ".temp" -Force -Verbose
 
       - name: Reinitialize git repository
         # Reinitialize git after scaffolding this repository.
@@ -63,6 +63,7 @@ jobs:
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
+          git add .
           git commit -m 'Initial commit'
           git push origin -f --token ${{ secrets.GITHUB_TOKEN }}
       - name: Remove temporary directory
@@ -80,12 +81,3 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/OWNER/REPO/actions/secrets/SECRET_NAME
-  cancelled:
-    name: Check Cancelled
-    runs-on: windows-latest
-    if: ${{ cancelled() }}
-    steps:
-      - name: Cancelled
-        run: |
-          echo "Workflow cancelled"
-          echo "Reason: ${{ github.event.workflow_run.cancel_reason }}"
