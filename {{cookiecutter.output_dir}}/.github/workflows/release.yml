@@ -7,7 +7,7 @@ on:
     - 'v*'
 
 env:
-  SOLUTION_NAME: {{cookiecutter.plugin_name}}
+  SOLUTION_NAME: ${{ github.event.repository.name }}
 
 permissions:
   contents: write
@@ -19,26 +19,27 @@ jobs:
 
     steps:
     - name: Clone Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}
         path: plugin
 
     - name: Clone BakkesmodSDK
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}
         repository: bakkesmodorg/BakkesModSDK
-        path: plugin\bakkesmodsdk
+        path: plugin/bakkesmodsdk
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-{% raw %}
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
     - name: Build
-      run: msbuild /m /p:Configuration=Release /p:BakkesModPath=$env:GITHUB_WORKSPACE\plugin /p:Environment=GitHub $env:GITHUB_WORKSPACE\plugin\${{ env.SOLUTION_NAME }}.sln
+      run: msbuild plugin/${{ github.event.repository.name }}.sln -p:BakkesModPath=$env:GITHUB_WORKSPACE/plugin;Environment=GitHub;Configuration=Release
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        files: ${{ github.workspace }}\plugin\plugins\${{ env.SOLUTION_NAME }}.dll
+        files: ${{ github.workspace }}\plugin\plugins\${{ github.event.repository.name }}.dll
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-{% endraw %}

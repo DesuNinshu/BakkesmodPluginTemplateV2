@@ -4,6 +4,7 @@
     "output_dir": "{{cookiecutter.output_dir}}",
     "_copy_without_render": [
         "{{cookiecutter.plugin_name}}/fmt/*",
-        "{{cookiecutter.plugin_name}}/IMGUI/*"
+        "{{cookiecutter.plugin_name}}/IMGUI/*",
+        ".github/*"
     ]
 }
